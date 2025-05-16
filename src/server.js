@@ -18,16 +18,51 @@ import sequelize from "../src/config/db.js";
 import initModels from "../src/models/init-models.js";
 import HookRoute from "./routes/HookRoute.js";
 import VoucherRoute from "./routes/VoucherRoute.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
+
 const app = express();
-
-
 app.use(express.json());
 
 // Khởi tạo models
 const models = initModels(sequelize);
 const { Products } = models;
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["http://192.168.100.134:5173", "http://tmdt2.cholimexfood.com.vn"],
+    credentials: true,
+  },
+});
+const allowedOrigins = [
+  "http://192.168.100.134:5173",
+  "http://tmdt2.cholimexfood.com.vn",
+];
 
-app.use(cors());
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+httpServer.listen(8080, () => {
+  console.log("Server running on port 8080 with WebSocket");
+});
+
 app.use(express.json());
 app.use(errorHandler);
 
@@ -46,5 +81,3 @@ app.use(LoyaltyRoute);
 app.use(StatisticsRoute);
 app.use(HookRoute);
 app.use(VoucherRoute);
-
-app.listen(8080);
