@@ -106,7 +106,7 @@ export const getAllProducts = async (req, res) => {
         "Ingredients",
       ],
     });
-    res.status(200).json(products);
+    res.status(200).json(products || []);
   } catch (error) {
     res
       .status(500)
