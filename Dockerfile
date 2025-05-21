@@ -1,11 +1,6 @@
 FROM node:18
-
 WORKDIR /app
-
-COPY package.json yarn.lock ./
-RUN yarn install
-
 COPY . .
-
+RUN npm install
 EXPOSE 8080
-CMD ["yarn", "start"]
+CMD ["node", "index.js"]  # hoặc file chính của bạn
