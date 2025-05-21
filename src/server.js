@@ -37,6 +37,7 @@ const io = new Server(httpServer, {
 const allowedOrigins = [
   "http://192.168.100.134:5173",
   "http://tmdt2.cholimexfood.com.vn",
+  "http://localhost:5173",
 ];
 
 app.use(
