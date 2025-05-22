@@ -20,6 +20,7 @@ import HookRoute from "./routes/HookRoute.js";
 import VoucherRoute from "./routes/VoucherRoute.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
+const { exec } = require('child_process');
 
 const app = express();
 app.use(express.json());
@@ -65,7 +66,16 @@ io.on("connection", (socket) => {
 httpServer.listen(8080, () => {
   console.log("Server running on port 8080 with WebSocket");
 });
-
+app.post('/webhook', (req, res) => {
+  exec('/var/www/tmdt2/deploy.sh', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error: ${error}`);
+      return res.status(500).send('Deploy failed');
+    }
+    console.log(`Output: ${stdout}`);
+    res.status(200).send('Deploy successful');
+  });
+});
 app.use(express.json());
 app.use(errorHandler);
 
