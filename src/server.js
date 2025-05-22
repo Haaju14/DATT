@@ -28,15 +28,17 @@ app.use(express.json());
 const models = initModels(sequelize);
 const { Products } = models;
 const httpServer = createServer(app);
+
 const io = new Server(httpServer, {
   cors: {
-    origin: ["http://192.168.100.134:5173", "http://tmdt2.cholimexfood.com.vn"],
+    origin: ["http://192.168.100.134:5173", "http://tmdt2.cholimexfood.com.vn","https://tmdt2.cholimexfood.com.vn"],
     credentials: true,
   },
 });
 const allowedOrigins = [
   "http://192.168.100.134:5173",
   "http://tmdt2.cholimexfood.com.vn",
+  "https://tmdt2.cholimexfood.com.vn",
   "http://localhost:5173",
 ];
 
